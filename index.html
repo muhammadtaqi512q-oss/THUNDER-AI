@@ -42,7 +42,7 @@ if(r.status===429 && i<retries) await new Promise(res=>setTimeout(res,2**i*1000)
 
 /* -------- GEMINI TEXT AI -------- */
 async function GeminiAI(prompt){
-const API_KEY="AIzaSyAIFlKbkNbmqBxJoih8O9G6Y8Nzv9cPgR8";
+const API_KEY="AIzaSyCEug7SUgxZlrjj78Ese_E611661ae1f-g";
 const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
 
 const payload={
@@ -194,3 +194,4 @@ Processing...
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"e3c1c9af36de41759418005494a48906","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
+
