@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Security Awareness | Cyber Crimes</title>
+    <style>
+        :root {
+            --bg-color: #0a0f1d;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-color: #e2e8f0;
+            --accent-gold: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            color: var(--accent-red);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .card h2 {
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 10px;
+        }
+
+        .danger-list li {
+            margin-bottom: 15px;
+            list-style-type: none;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .danger-list li::before {
+            content: "⚠";
+            position: absolute;
+            left: 0;
+            color: var(--accent-red);
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .stats-table th, .stats-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stats-table th {
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .calculator {
+            background: rgba(239, 68, 68, 0.02);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .calculator h2 {
+            color: var(--accent-red);
+            border-left-color: var(--accent-red);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .status-allow {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .status-warn {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .status-deny {
+            background: rgba(239, 64, 64, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .policy-note {
+            margin-top: 30px;
+            background: rgba(245, 158, 11, 0.03);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+        }
+
+        .policy-note p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Cyber Crime & Policy Awareness</h1>
+        <p>Hackers Hamare Liye Kis Qadar Nuqsande Hain? Aik Tafseeli Jaiza</p>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Hackers Nuqsande Kyun Hain?</h2>
+            <ul class="danger-list">
+                <li><strong>Mali Nuqsan (Financial Loss):</strong> Har aik attack par aam sarif ya idaray ka bhari mali nuqsan hota hai.</li>
+                <li><strong>Data Ki Chori:</strong> Aap ki personal photos, passwords, aur bank details leak ho sakti hain.</li>
+                <li><strong>Privacy Khatam:</strong> Aap ki ijazat ke bgher aap ke system par control hasil kiya jata hai.</li>
+                <li><strong>Zehni Azziyat:</strong> Cyber attack ke baad victim shadeed zehni tanawo (stress) ka shikaar ho jata hai.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Crime Level & System Rules</h2>
+            <p>Hamare system ke mutabiq hacker ke nuqsan ka hisab yun lagaya jata hai:</p>
+            <table class="stats-table">
+                <tr>
+                    <th>Har 1 Hack Nuqsan</th>
+                    <td>Rs. 40,000</td>
+                </tr>
+                <tr>
+                    <th>Hacker Reward</th>
+                    <td>1 Star (⭐) per hack</td>
+                </tr>
+                <tr>
+                    <th>Level Up Rule</th>
+                    <td>5 Stars = 1 Level Up</td>
+                </tr>
+                <tr>
+                    <th>Total Crime Levels</th>
+                    <td>10 Levels Max</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card calculator">
+        <h2>Student Forgiveness Calculator</h2>
+        <p style="margin-bottom: 20px; color: #94a3b8;">Syllabus aur policy ke mutabiq check karein ke kis level tak student ko maaf kiya ja sakta hai:</p>
+        
+        <div class="form-group">
+            <label for="crimeLevel">Hacker Ka Maujuda Crime Level Select Karein:</label>
+            <select id="crimeLevel" onchange="calculateImpact()">
+                <option value="1">Level 1 (5 Stars)</option>
+                <option value="2">Level 2 (10 Stars)</option>
+                <option value="3">Level 3 (15 Stars) - Maximum Forgiveness Limit</option>
+                <option value="4">Level 4 (20 Stars)</option>
+                <option value="5">Level 5 (25 Stars)</option>
+                <option value="6">Level 6 (30 Stars)</option>
+                <option value="7">Level 7 (35 Stars)</option>
+                <option value="8">Level 8 (40 Stars)</option>
+                <option value="9">Level 9 (45 Stars)</option>
+                <option value="10">Level 10 (50 Stars) - Critical</option>
+            </select>
+        </div>
+
+        <div class="result-box">
+            <p><strong>Total Financial Loss:</strong> <span id="lossAmount" style="color: var(--accent-red); font-weight: bold;">Rs. 200,000</span></p>
+            <p><strong>Total Stars Earned:</strong> <span id="starsEarned" style="color: var(--accent-gold); font-weight: bold;">5 Stars</span></p>
+            <div>
+                <strong>Action / Policy Status:</strong><br>
+                <span id="statusBadge" class="status-badge status-allow">Maafi Mumkin Hai (Learning Phase)</span>
+            </div>
+            <p id="statusDesc" style="margin-top: 10px; font-size: 0.95rem; color: #cbd5e1;">Yeh shuruati level hai. Student ko warning de kar aur cyber ethics sikha kar maaf kiya ja sakta hai.</p>
+        </div>
+    </div>
+
+    <div class="card policy-note">
+        <h2 style="color: var(--accent-gold); border-left-color: var(--accent-gold);">Hum Kis Level Tak Maaf Kar Sakte Hain?</h2>
+        <p><strong>Wazahat:</strong> Shuruati seekhne ke marahil (Learning Phase) mein students se ghaltiyan hoti hain. Magar cyber crimes mein aik had muqarrar karna zaroori hai:</p>
+        <ul>
+            <li><strong>Level 1 se Level 2:</strong> Mukammal tor par maafi di ja sakti hai kyun ke yeh nadani ya seekhne ka doran ho sakta hai.</li>
+            <li><strong>Level 3 (Akhri Had):</strong> Yeh **Strict Maximum Limit** hai. Level 3 par total loss 6 Lakh tak pohnch jata hai. Yahan tak aakhri warning ke sath maaf kiya ja sakta hai.</li>
+            <li><strong>Level 4 Aur Uss Se Agay (No Forgiveness):</strong> Level 4 par pohnchte hi hacker professionally nuqsan pohnchana shuru kar deta hai. Iss ke baad koi maafi nahi di ja sakti aur strict legal action/blacklistment zaroori ho jati hai.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function calculateImpact() {
+    const level = parseInt(document.getElementById('crimeLevel').value);
+    const stars = level * 5;
+    const loss = stars * 40000;
+    
+    document.getElementById('lossAmount').innerText = "Rs. " + loss.toLocaleString();
+    document.getElementById('starsEarned').innerText = stars + " Stars";
+    
+    const badge = document.getElementById('statusBadge');
+    const desc = document.getElementById('statusDesc');
+    
+    if(level <= 2) {
+        badge.className = "status-badge status-allow";
+        badge.innerText = "Maafi Mumkin Hai (Warning & Counseling)";
+        desc.innerText = "Yeh shuruati level hai. Student ko cyber ethics sikha kar aur warning de kar maaf kiya ja sakta hai kyun ke yeh seekhne ka marhala ho sakta hai.";
+    } else if(level == 3) {
+        badge.className = "status-badge status-warn";
+        badge.innerText = "Aakhri Had (Maximum Limit)";
+        desc.innerText = "Yeh maafi ki aakhri had hai. Iss ke baad agar student ne aik bhi attack kiya to strict action liya jaye ga.";
+    } else {
+        badge.className = "status-badge status-deny";
+        badge.innerText = "Strict Action (No Forgiveness)";
+        desc.innerText = "Crime level barh chuka hai aur nuqsan bht zayda hai. Ab koi maafi nahi di ja sakti, professional hacking ke tehat legal action liya jaye ga.";
+    }
+}
+</script>
+
+</body>
+</html>
