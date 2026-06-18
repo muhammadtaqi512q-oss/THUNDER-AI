@@ -222,7 +222,7 @@
             <table class="stats-table">
                 <tr>
                     <th>Har 1 Hack Nuqsan</th>
-                    <td>Rs. 40,000</td>
+                    <td>Rs. 70,000</td>
                 </tr>
                 <tr>
                     <th>Hacker Reward</th>
@@ -261,7 +261,7 @@
         </div>
 
         <div class="result-box">
-            <p><strong>Total Financial Loss:</strong> <span id="lossAmount" style="color: var(--accent-red); font-weight: bold;">Rs. 200,000</span></p>
+            <p><strong>Total Financial Loss:</strong> <span id="lossAmount" style="color: var(--accent-red); font-weight: bold;">Rs. 350,000</span></p>
             <p><strong>Total Stars Earned:</strong> <span id="starsEarned" style="color: var(--accent-gold); font-weight: bold;">5 Stars</span></p>
             <div>
                 <strong>Action / Policy Status:</strong><br>
@@ -286,7 +286,7 @@
 function calculateImpact() {
     const level = parseInt(document.getElementById('crimeLevel').value);
     const stars = level * 5;
-    const loss = stars * 40000;
+    const loss = stars * 70000;
     
     document.getElementById('lossAmount').innerText = "Rs. " + loss.toLocaleString();
     document.getElementById('starsEarned').innerText = stars + " Stars";
