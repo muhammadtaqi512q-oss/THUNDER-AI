@@ -1,205 +1,407 @@
 <!DOCTYPE html>
-<html>
-<head><title>AI Brain</title></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ AI Video Assistant – Server</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a28;
+            --glass: rgba(20, 20, 35, 0.75);
+            --glass2: rgba(30, 30, 50, 0.6);
+            --primary: #a855f7;
+            --primary2: #7c3aed;
+            --accent: #06b6d4;
+            --accent2: #0ea5e9;
+            --gold: #f59e0b;
+            --text: #e2e8f0;
+            --text2: #b0b8c8;
+            --text3: #7c8498;
+            --red: #ef4444;
+            --green: #10b981;
+            --border: rgba(255, 255, 255, 0.08);
+            --border2: rgba(255, 255, 255, 0.14);
+            --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            --glow: 0 0 30px rgba(168, 85, 247, 0.25);
+            --glow-accent: 0 0 25px rgba(6, 182, 212, 0.2);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .particle { position: absolute; border-radius: 50%; animation: floatUp linear infinite; opacity: 0; }
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .main-container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
+        .header { text-align: center; padding: 25px 20px 15px; position: relative; }
+        .header .logo-icon { font-size: 52px; display: inline-block; animation: pulseIcon 2.5s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.5)); }
+        @keyframes pulseIcon { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+        .header h1 {
+            font-size: 2.2em; font-weight: 800;
+            background: linear-gradient(135deg, #c084fc, #a855f7, #7c3aed, #06b6d4);
+            background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; animation: gradientShift 4s ease infinite; margin: 6px 0; letter-spacing: -0.5px;
+        }
+        @keyframes gradientShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .header .subtitle { color: var(--text2); font-size: 0.95em; letter-spacing: 1px; opacity: 0.8; }
+        .header .badge { display: inline-block; background: var(--glass2); border: 1px solid var(--border2); padding: 6px 16px; border-radius: 20px; font-size: 0.78em; color: var(--accent); margin-top: 8px; backdrop-filter: blur(10px); }
+        .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: var(--shadow), var(--glow); flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-area { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; max-height: 55vh; min-height: 200px; scroll-behavior: smooth; }
+        .chat-area::-webkit-scrollbar { width: 5px; }
+        .chat-area::-webkit-scrollbar-track { background: transparent; }
+        .chat-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .message { display: flex; gap: 10px; animation: slideIn 0.4s ease-out; align-items: flex-start; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .message.user { flex-direction: row-reverse; }
+        .message .avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .message.ai .avatar { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+        .message.user .avatar { background: linear-gradient(135deg, #06b6d4, #0ea5e9); }
+        .message .bubble { max-width: 75%; padding: 14px 18px; border-radius: 18px; word-wrap: break-word; line-height: 1.5; font-size: 0.95em; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .message.ai .bubble { background: var(--surface2); border: 1px solid var(--border); border-bottom-left-radius: 6px; color: var(--text); }
+        .message.user .bubble { background: linear-gradient(135deg, #7c3aed, #6d28d9); border-bottom-right-radius: 6px; color: #fff; }
+        .message .time { font-size: 0.7em; color: var(--text3); margin-top: 4px; padding: 0 4px; }
+        .video-container { margin: 8px 0; border-radius: var(--radius-sm); overflow: hidden; background: #000; position: relative; aspect-ratio: 16/9; width: 100%; max-width: 500px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); border: 2px solid var(--border2); transition: var(--transition); }
+        .video-container:hover { border-color: var(--primary); box-shadow: 0 8px 40px rgba(168,85,247,0.3); }
+        .video-container iframe { width: 100%; height: 100%; border: none; display: block; }
+        .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 2; }
+        .video-container:hover .video-overlay { opacity: 1; }
+        .video-overlay a { background: var(--primary); color: #fff; padding: 10px 20px; border-radius: 25px; text-decoration: none; font-weight: 600; pointer-events: all; transition: var(--transition); font-size: 0.9em; }
+        .video-overlay a:hover { background: var(--primary2); transform: scale(1.05); box-shadow: 0 0 25px rgba(168,85,247,0.5); }
+        .input-area { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; background: var(--glass2); backdrop-filter: blur(10px); }
+        .input-area input { flex: 1; padding: 13px 18px; border-radius: 30px; border: 2px solid var(--border2); background: var(--surface); color: var(--text); font-size: 0.95em; outline: none; transition: var(--transition); }
+        .input-area input:focus { border-color: var(--primary); box-shadow: 0 0 20px rgba(168,85,247,0.2); background: var(--surface2); }
+        .input-area input::placeholder { color: var(--text3); }
+        .btn-send { width: 48px; height: 48px; border-radius: 50%; border: none; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; font-size: 1.3em; cursor: pointer; transition: var(--transition); flex-shrink: 0; box-shadow: 0 4px 18px rgba(168,85,247,0.35); display: flex; align-items: center; justify-content: center; }
+        .btn-send:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(168,85,247,0.55); }
+        .btn-send:active { transform: scale(0.94); }
+        .chips-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 20px; justify-content: center; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+        .chip { padding: 7px 15px; border-radius: 20px; border: 1px solid var(--border2); background: var(--glass2); color: var(--text2); cursor: pointer; font-size: 0.8em; transition: var(--transition); white-space: nowrap; backdrop-filter: blur(6px); }
+        .chip:hover { background: var(--primary); color: #fff; border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(168,85,247,0.3); }
+        .chip:active { transform: scale(0.94); }
+        .typing-dots { display: flex; gap: 5px; padding: 5px 0; }
+        .typing-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); animation: dotBounce 1.3s infinite ease-in-out; }
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBounce { 0%,60%,100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-10px); opacity: 1; } }
+        .security-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-120px); background: #1a1a1a; color: #ff6b6b; padding: 12px 24px; border-radius: 30px; font-weight: 600; z-index: 9999; border: 1px solid #ff6b6b55; box-shadow: 0 8px 30px rgba(255,107,107,0.3); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 0.9em; pointer-events: none; letter-spacing: 0.5px; }
+        .security-toast.show { transform: translateX(-50%) translateY(0); }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.5em; }
+            .message .bubble { max-width: 85%; font-size: 0.85em; }
+            .chat-area { max-height: 40vh; padding: 12px; }
+            .input-area { padding: 10px 12px; gap: 6px; }
+            .input-area input { padding: 11px 14px; font-size: 0.85em; }
+            .btn-send { width: 40px; height: 40px; font-size: 1.1em; }
+            .chips-row { padding: 8px 10px; gap: 5px; }
+            .chip { padding: 5px 10px; font-size: 0.7em; }
+        }
+    </style>
+</head>
 <body>
-    <script>
-       const mediaMap = {
-  "hourse and human": [
-    "https://www.meta.ai/share/m/LyK0N2xytF",
-    "https://www.meta.ai/share/m/pP0N50dSx9",
-    "https://www.meta.ai/share/m/OfnMnG2a9u",
-    "https://www.meta.ai/share/m/K2PDrByGzA"
-  ],
-  "girl": [
-    "https://www.meta.ai/share/m/o3zLYuP7o0",
-    "https://www.meta.ai/share/m/yat2L5K8vZ",
-    "https://www.meta.ai/share/m/FN7fBwminP",
-    "https://www.meta.ai/share/m/HjTf7O7KsZ"
-  ],
-  "old man": [
-    "https://www.meta.ai/share/m/sYIVMZTMk6",
-    "https://www.meta.ai/share/m/L2WqcU7elo",
-    "https://www.meta.ai/share/m/5tqjFzNDcl",
-    "https://www.meta.ai/share/m/Oy59RYWAI9",
-    "https://www.meta.ai/share/m/B2hLNgrjIa"
-  ],
-  "battle": [
-    "https://www.meta.ai/share/m/Mr1bn0ZeuN",
-    "https://www.meta.ai/share/m/kAfj78B9QH",
-    "https://www.meta.ai/share/m/9v6XeflrHJ",
-    "https://www.meta.ai/share/m/jqTrgiNqDm"
-  ],
-  "hourse battle": [
-    "https://www.meta.ai/share/m/WA348NlFvX",
-    "https://www.meta.ai/share/m/lVbw865lyi"
-  ],
-  "army": [
-    "https://www.meta.ai/share/m/kzMh30Svu9",
-    "https://www.meta.ai/share/m/MwFX8irP7J",
-    "https://www.meta.ai/share/m/CmG7HIu1g9",
-    "https://www.meta.ai/share/m/lzizxuZMeo",
-    "https://www.meta.ai/share/m/6S04yMceLd",
-    "https://www.meta.ai/share/m/nBE4tWag2a"
-  ],
-  "soldier fight": [
-    "https://www.meta.ai/share/m/lvrQpV0BqA",
-    "https://www.meta.ai/share/m/VWBaC5k8Fo"
-  ],
-  "fight": [
-    "https://www.meta.ai/share/m/GjblewrHnY",
-    "https://www.meta.ai/share/m/ZFmfGDxidJ",
-    "https://www.meta.ai/share/m/SapPQKSJnl"
-  ],
-  "beautifull place": [
-    "https://www.meta.ai/share/m/J9JEf7cFqa",
-    "https://www.meta.ai/share/m/UBP1rruWQE",
-    "https://www.meta.ai/share/m/2R8339BJkh",
-    "https://www.meta.ai/share/m/mJSpQ8QurU",
-    "https://www.meta.ai/share/m/rF0Ywh0zPV"
-  ],
-  "housre ridders": [
-    "https://www.meta.ai/share/m/ej3UbS1pgY",
-    "https://www.meta.ai/share/m/nyZe7WqHh4",
-    "https://www.meta.ai/share/m/xWy4N6Lu1A",
-    "https://www.meta.ai/share/m/OtYe8BBzDE",
-    "https://www.meta.ai/share/m/oF1kLsglZU"
-  ],
-  "race": [
-    "https://www.meta.ai/share/m/Y7AVe1Fcdq",
-    "https://www.meta.ai/share/m/TV53jAuaMfH"
-  ],
-  "king": [
-    "https://www.meta.ai/share/m/qTvtFN8RNb",
-    "https://www.meta.ai/share/m/IqWwmo7dnt"
-  ],
-  "castle": [
-    "https://www.meta.ai/share/m/IqWwmo7dnt",
-    "https://www.meta.ai/share/m/DT2T3Eurjn"
-  ],
-  "hourse ridder in forest": [
-    "https://www.meta.ai/share/m/2fsYKJjg3o",
-    "https://www.meta.ai/share/m/tzXYEUCRFI",
-    "https://www.meta.ai/share/m/zK59TNwZId"
-  ],
-  "forest": [
-    "https://www.meta.ai/share/m/2fsYKJjg3o",
-    "https://www.meta.ai/share/m/tzXYEUCRFI",
-    "https://www.meta.ai/share/m/zK59TNwZId"
-  ],
-  "children": [
-    "https://www.meta.ai/share/m/7nM7VIeRRV",
-    "https://www.meta.ai/share/m/TokzZ5tyGp",
-    "https://www.meta.ai/share/m/zMZclwVZr1",
-    "https://www.meta.ai/share/m/XMkyjkUR84"
-  ],
-  "desert": [
-    "https://www.meta.ai/share/m/OOsEJl0b95",
-    "https://www.meta.ai/share/m/F2iQAhzJnc",
-    "https://www.meta.ai/share/m/eaxLvBxKLP",
-    "https://www.meta.ai/share/m/mn2a7gLfDU"
-  ],
-  "road": [
-    "https://www.meta.ai/share/m/pZ6cACMtO4",
-    "https://www.meta.ai/share/m/9jZyLrCp5A",
-    "https://www.meta.ai/share/m/0p9Zhc7yDK"
-  ],
-  "poor": [
-    "https://www.meta.ai/share/m/8IxrGIwmRj",
-    "https://www.meta.ai/share/m/Lg4Xi6Z5N1"
-  ],
-  "rich": [
-    "https://www.meta.ai/share/m/AxHWkjfcWw",
-    "https://www.meta.ai/share/m/jKuOsWb3x9"
-  ],
-  "hotel": [
-    "https://www.meta.ai/share/m/vKMCmrAChp"
-  ],
-  "resturant": [
-    "https://www.meta.ai/share/m/vKMCmrAChp"
-  ],
-  "police": [
-    "https://www.meta.ai/share/m/CmG7HIu1g9",
-    "https://www.meta.ai/share/m/lzizxuZMeo",
-    "https://www.meta.ai/share/m/6S04yMceLd",
-    "https://www.meta.ai/share/m/nBE4tWag2a"
-  ],
-  "else": [
-    "https://www.meta.ai/share/m/LyK0N2xytF",
-    "https://www.meta.ai/share/m/pP0N50dSx9",
-    "https://www.meta.ai/share/m/OfnMnG2a9u",
-    "https://www.meta.ai/share/m/K2PDrByGzA",
-    "https://www.meta.ai/share/m/o3zLYuP7o0",
-    "https://www.meta.ai/share/m/yat2L5K8vZ",
-    "https://www.meta.ai/share/m/FN7fBwminP",
-    "https://www.meta.ai/share/m/HjTf7O7KsZ",
-    "https://www.meta.ai/share/m/sYIVMZTMk6",
-    "https://www.meta.ai/share/m/L2WqcU7elo",
-    "https://www.meta.ai/share/m/5tqjFzNDcl",
-    "https://www.meta.ai/share/m/Oy59RYWAI9",
-    "https://www.meta.ai/share/m/B2hLNgrjIa",
-    "https://www.meta.ai/share/m/Mr1bn0ZeuN",
-    "https://www.meta.ai/share/m/kAfj78B9QH",
-    "https://www.meta.ai/share/m/9v6XeflrHJ",
-    "https://www.meta.ai/share/m/jqTrgiNqDm",
-    "https://www.meta.ai/share/m/WA348NlFvX",
-    "https://www.meta.ai/share/m/lVbw865lyi",
-    "https://www.meta.ai/share/m/kzMh30Svu9",
-    "https://www.meta.ai/share/m/MwFX8irP7J",
-    "https://www.meta.ai/share/m/lvrQpV0BqA",
-    "https://www.meta.ai/share/m/VWBaC5k8Fo",
-    "https://www.meta.ai/share/m/GjblewrHnY",
-    "https://www.meta.ai/share/m/ZFmfGDxidJ",
-    "https://www.meta.ai/share/m/SapPQKSJnl",
-    "https://www.meta.ai/share/m/J9JEf7cFqa",
-    "https://www.meta.ai/share/m/UBP1rruWQE",
-    "https://www.meta.ai/share/m/2R8339BJkh",
-    "https://www.meta.ai/share/m/mJSpQ8QurU",
-    "https://www.meta.ai/share/m/rF0Ywh0zPV",
-    "https://www.meta.ai/share/m/ej3UbS1pgY",
-    "https://www.meta.ai/share/m/nyZe7WqHh4",
-    "https://www.meta.ai/share/m/xWy4N6Lu1A",
-    "https://www.meta.ai/share/m/OtYe8BBzDE",
-    "https://www.meta.ai/share/m/oF1kLsglZU",
-    "https://www.meta.ai/share/m/Y7AVe1Fcdq",
-    "https://www.meta.ai/share/m/TV53jAuaMfH",
-    "https://www.meta.ai/share/m/qTvtFN8RNb",
-    "https://www.meta.ai/share/m/IqWwmo7dnt",
-    "https://www.meta.ai/share/m/DT2T3Eurjn",
-    "https://www.meta.ai/share/m/2fsYKJjg3o",
-    "https://www.meta.ai/share/m/tzXYEUCRFI",
-    "https://www.meta.ai/share/m/zK59TNwZId",
-    "https://www.meta.ai/share/m/7nM7VIeRRV",
-    "https://www.meta.ai/share/m/TokzZ5tyGp",
-    "https://www.meta.ai/share/m/zMZclwVZr1",
-    "https://www.meta.ai/share/m/XMkyjkUR84",
-    "https://www.meta.ai/share/m/OOsEJl0b95",
-    "https://www.meta.ai/share/m/F2iQAhzJnc",
-    "https://www.meta.ai/share/m/eaxLvBxKLP",
-    "https://www.meta.ai/share/m/mn2a7gLfDU",
-    "https://www.meta.ai/share/m/pZ6cACMtO4",
-    "https://www.meta.ai/share/m/9jZyLrCp5A",
-    "https://www.meta.ai/share/m/0p9Zhc7yDK",
-    "https://www.meta.ai/share/m/8IxrGIwmRj",
-    "https://www.meta.ai/share/m/Lg4Xi6Z5N1",
-    "https://www.meta.ai/share/m/AxHWkjfcWw",
-    "https://www.meta.ai/share/m/jKuOsWb3x9",
-    "https://www.meta.ai/share/m/vKMCmrAChp",
-    "https://www.meta.ai/share/m/CmG7HIu1g9",
-    "https://www.meta.ai/share/m/lzizxuZMeo",
-    "https://www.meta.ai/share/m/6S04yMceLd",
-    "https://www.meta.ai/share/m/nBE4tWag2a"
-  ]
-};
+    <div id="particles"></div>
+    <div class="security-toast" id="securityToast">🔒 This action is blocked for security</div>
 
+    <div class="main-container">
+        <div class="header">
+            <div class="logo-icon">🧠</div>
+            <h1>AI Video Assistant</h1>
+            <p class="subtitle">✨ Smart Video Responder</p>
+            <span class="badge">🔒 Secure Mode</span>
+        </div>
+        <div class="glass-card">
+            <div class="chat-area" id="chatArea">
+                <div class="message ai">
+                    <div class="avatar">🤖</div>
+                    <div>
+                        <div class="bubble">
+                            👋 <strong>Welcome!</strong> I'm your AI Video Assistant.<br>
+                            Type a keyword like <em>"battle"</em>, <em>"desert"</em>, <em>"forest"</em>… and I'll find a video for you!
+                        </div>
+                        <div class="time">Just now</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chips-row" id="chipsRow">
+                <span class="chip" data-keyword="battle">⚔️ Battle</span>
+                <span class="chip" data-keyword="desert">🏜️ Desert</span>
+                <span class="chip" data-keyword="forest">🌲 Forest</span>
+                <span class="chip" data-keyword="horse">🐴 Horse</span>
+                <span class="chip" data-keyword="girl">👧 Girl</span>
+                <span class="chip" data-keyword="army">🪖 Army</span>
+                <span class="chip" data-keyword="castle">🏰 Castle</span>
+                <span class="chip" data-keyword="race">🏁 Race</span>
+                <span class="chip" data-keyword="king">👑 King</span>
+                <span class="chip" data-keyword="children">🧒 Children</span>
+                <span class="chip" data-keyword="road">🛣️ Road</span>
+                <span class="chip" data-keyword="police">🚔 Police</span>
+                <span class="chip" data-keyword="beautiful">🌅 Beautiful</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="Type a keyword... e.g. battle, desert, forest..." autocomplete="off">
+                <button class="btn-send" id="btnSend">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== SECURITY & BLOCKING ====================
+        const securityToast = document.getElementById('securityToast');
+        function showSecurityToast() {
+            securityToast.classList.add('show');
+            clearTimeout(window._secTimer);
+            window._secTimer = setTimeout(() => securityToast.classList.remove('show'), 1800);
+        }
+        document.addEventListener('contextmenu', e => { e.preventDefault(); showSecurityToast(); });
+        document.addEventListener('dragstart', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey||e.metaKey) && e.key==='u') { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='i'||e.key==='I')) { e.preventDefault(); showSecurityToast(); }
+            if (e.key==='F12'||e.keyCode===123) { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='j'||e.key==='J')) { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='c'||e.key==='C')) { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && (e.key==='s'||e.key==='S')) { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && (e.key==='p'||e.key==='P')) { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && e.shiftKey && e.key==='Delete') { e.preventDefault(); showSecurityToast(); }
+            if ((e.ctrlKey||e.metaKey) && (e.key==='a'||e.key==='A') && document.activeElement!==document.getElementById('userInput')) { e.preventDefault(); showSecurityToast(); }
+        });
+
+        // ==================== VIDEO DATABASE ====================
+        const videoDB = {
+            'horse': [
+                'https://www.meta.ai/share/m/LyK0N2xytF','https://www.meta.ai/share/m/pP0N50dSx9','https://www.meta.ai/share/m/OfnMnG2a9u',
+                'https://www.meta.ai/share/m/K2PDrByGzA','https://www.meta.ai/share/m/WA348NlFvX','https://www.meta.ai/share/m/lVbw865lyi',
+                'https://www.meta.ai/share/m/ej3UbS1pgY','https://www.meta.ai/share/m/nyZe7WqHh4','https://www.meta.ai/share/m/xWy4N6Lu1A',
+                'https://www.meta.ai/share/m/OtYe8BBzDE','https://www.meta.ai/share/m/oF1kLsglZU','https://www.meta.ai/share/m/2fsYKJjg3o',
+                'https://www.meta.ai/share/m/tzXYEUCRFI','https://www.meta.ai/share/m/zK59TNwZId'
+            ],
+            'battle': [
+                'https://www.meta.ai/share/m/Mr1bn0ZeuN','https://www.meta.ai/share/m/kAfj78B9QH','https://www.meta.ai/share/m/9v6XeflrHJ',
+                'https://www.meta.ai/share/m/jqTrgiNqDm','https://www.meta.ai/share/m/WA348NlFvX','https://www.meta.ai/share/m/lVbw865lyi'
+            ],
+            'girl': [
+                'https://www.meta.ai/share/m/o3zLYuP7o0','https://www.meta.ai/share/m/yat2L5K8vZ','https://www.meta.ai/share/m/FN7fBwminP',
+                'https://www.meta.ai/share/m/HjTf7O7KsZ'
+            ],
+            'old man': [
+                'https://www.meta.ai/share/m/sYIVMZTMk6','https://www.meta.ai/share/m/L2WqcU7elo','https://www.meta.ai/share/m/5tqjFzNDcl',
+                'https://www.meta.ai/share/m/Oy59RYWAI9','https://www.meta.ai/share/m/B2hLNgrjIa'
+            ],
+            'army': [
+                'https://www.meta.ai/share/m/kzMh30Svu9','https://www.meta.ai/share/m/MwFX8irP7J','https://www.meta.ai/share/m/CmG7HIu1g9',
+                'https://www.meta.ai/share/m/lzizxuZMeo','https://www.meta.ai/share/m/6S04yMceLd','https://www.meta.ai/share/m/nBE4tWag2a'
+            ],
+            'soldier': [
+                'https://www.meta.ai/share/m/lvrQpV0BqA','https://www.meta.ai/share/m/VWBaC5k8Fo','https://www.meta.ai/share/m/kzMh30Svu9',
+                'https://www.meta.ai/share/m/MwFX8irP7J'
+            ],
+            'fight': [
+                'https://www.meta.ai/share/m/GjblewrHnY','https://www.meta.ai/share/m/ZFmfGDxidJ','https://www.meta.ai/share/m/SapPQKSJnl',
+                'https://www.meta.ai/share/m/lvrQpV0BqA','https://www.meta.ai/share/m/VWBaC5k8Fo'
+            ],
+            'beautiful': [
+                'https://www.meta.ai/share/m/J9JEf7cFqa','https://www.meta.ai/share/m/UBP1rruWQE','https://www.meta.ai/share/m/2R8339BJkh',
+                'https://www.meta.ai/share/m/mJSpQ8QurU','https://www.meta.ai/share/m/rF0Ywh0zPV'
+            ],
+            'race': [
+                'https://www.meta.ai/share/m/Y7AVe1Fcdq','https://www.meta.ai/share/m/TV53jAuaMfH'
+            ],
+            'king': [
+                'https://www.meta.ai/share/m/qTvtFN8RNb','https://www.meta.ai/share/m/IqWwmo7dnt'
+            ],
+            'castle': [
+                'https://www.meta.ai/share/m/IqWwmo7dnt','https://www.meta.ai/share/m/DT2T3Eurjn'
+            ],
+            'forest': [
+                'https://www.meta.ai/share/m/2fsYKJjg3o','https://www.meta.ai/share/m/tzXYEUCRFI','https://www.meta.ai/share/m/zK59TNwZId'
+            ],
+            'children': [
+                'https://www.meta.ai/share/m/7nM7VIeRRV','https://www.meta.ai/share/m/TokzZ5tyGp','https://www.meta.ai/share/m/zMZclwVZr1',
+                'https://www.meta.ai/share/m/XMkyjkUR84'
+            ],
+            'desert': [
+                'https://www.meta.ai/share/m/OOsEJl0b95','https://www.meta.ai/share/m/F2iQAhzJnc','https://www.meta.ai/share/m/eaxLvBxKLP',
+                'https://www.meta.ai/share/m/mn2a7gLfDU'
+            ],
+            'road': [
+                'https://www.meta.ai/share/m/pZ6cACMtO4','https://www.meta.ai/share/m/9jZyLrCp5A','https://www.meta.ai/share/m/0p9Zhc7yDK'
+            ],
+            'poor': [
+                'https://www.meta.ai/share/m/8IxrGIwmRj','https://www.meta.ai/share/m/Lg4Xi6Z5N1'
+            ],
+            'rich': [
+                'https://www.meta.ai/share/m/AxHWkjfcWw','https://www.meta.ai/share/m/jKuOsWb3x9'
+            ],
+            'hotel': [
+                'https://www.meta.ai/share/m/vKMCmrAChp'
+            ],
+            'restaurant': [
+                'https://www.meta.ai/share/m/vKMCmrAChp'
+            ],
+            'police': [
+                'https://www.meta.ai/share/m/CmG7HIu1g9','https://www.meta.ai/share/m/lzizxuZMeo','https://www.meta.ai/share/m/6S04yMceLd',
+                'https://www.meta.ai/share/m/nBE4tWag2a'
+            ],
+        };
+        const allURLs = [...new Set(Object.values(videoDB).flat())];
+        const fallbackURLs = allURLs;
+
+        function findMatchingCategory(input) {
+            const s = input.toLowerCase().trim();
+            if (!s) return null;
+            const map = {
+                'horse': ['horse','hourse','ghora','ghoda','ridder','rider','horse rider','hourse ridder','horse and human'],
+                'battle': ['battle','war','battel','combat','battleground'],
+                'girl': ['girl','woman','female','lady','kuri','larki'],
+                'old man': ['old man','oldman','baba','buzurg','aged','elder'],
+                'army': ['army','military','troops','fauj','sena'],
+                'soldier': ['soldier','jawaan','jawan','soldiers'],
+                'fight': ['fight','fighting','brawl','clash','ladai'],
+                'beautiful': ['beautiful','beautifull','beauty','gorgeous','scenic','beautiful place'],
+                'race': ['race','racing','speed','dod'],
+                'king': ['king','raja','emperor','badshah'],
+                'castle': ['castle','fort','palace','mahal','qila'],
+                'forest': ['forest','jungle','woods','jangal','horse rider in forest','ridder in forest'],
+                'children': ['children','kids','child','bachay','bacha'],
+                'desert': ['desert','sahara','sand','registan','sehra'],
+                'road': ['road','highway','street','sarak','rasta'],
+                'poor': ['poor','poverty','gareeb'],
+                'rich': ['rich','wealthy','ameer','luxury'],
+                'hotel': ['hotel','motel','inn'],
+                'restaurant': ['restaurant','resturant','dining','cafe'],
+                'police': ['police','cop','policia','thanedaar']
+            };
+            if (s.includes('horse battle')||s.includes('hourse battle')) return 'battle';
+            if (s.includes('soldier fight')) return 'soldier';
+            if (s.includes('beautiful place')||s.includes('beautifull place')) return 'beautiful';
+            for (const [cat, keywords] of Object.entries(map)) {
+                if (keywords.some(k => s.includes(k))) return cat;
+            }
+            for (const cat of Object.keys(videoDB)) {
+                if (s === cat || cat.includes(s)) return cat;
+            }
+            return null;
+        }
+        function getRandomVideo(cat) {
+            const arr = videoDB[cat];
+            return arr ? arr[Math.floor(Math.random()*arr.length)] : fallbackURLs[Math.floor(Math.random()*fallbackURLs.length)];
+        }
+        function getRandomFallback() {
+            return fallbackURLs[Math.floor(Math.random()*fallbackURLs.length)];
+        }
+
+        // ==================== API MODE ====================
         const params = new URLSearchParams(window.location.search);
         const q = params.get('q');
-        
-        if (q && mediaMap[q]) {
-            const list = mediaMap[q];
-            window.location.href = list[Math.floor(Math.random() * list.length)];
-        } else if (q) {
-            window.location.href = mediaMap["else"][0];
+        if (q) {
+            const cat = findMatchingCategory(q);
+            const video = cat ? getRandomVideo(cat) : getRandomFallback();
+            const msg = cat ? `Found a "${cat}" video for you.` : `No specific match. Here's a random video.`;
+            const response = { videoUrl: video, message: msg, query: q };
+            document.body.innerHTML = '';
+            document.write(JSON.stringify(response, null, 2));
+            throw new Error('API');
         }
+
+        // ==================== UI MODE (chat, particles, etc.) ====================
+        const particlesContainer = document.getElementById('particles');
+        const colors = ['#a855f7','#7c3aed','#06b6d4','#0ea5e9','#f59e0b','#10b981','#ef4444','#c084fc'];
+        function createParticle() {
+            const p = document.createElement('div'); p.classList.add('particle');
+            const size = Math.random()*6+2;
+            p.style.width = size+'px'; p.style.height = size+'px';
+            p.style.left = Math.random()*100+'%';
+            p.style.background = colors[Math.floor(Math.random()*colors.length)];
+            p.style.animationDuration = Math.random()*12+8+'s';
+            p.style.animationDelay = Math.random()*5+'s';
+            p.style.boxShadow = `0 0 ${size*3}px ${p.style.background}`;
+            particlesContainer.appendChild(p);
+            setTimeout(() => p.remove(), 20000);
+        }
+        setInterval(createParticle, 300);
+        for (let i=0;i<40;i++) setTimeout(createParticle, Math.random()*3000);
+
+        const chatArea = document.getElementById('chatArea');
+        const userInput = document.getElementById('userInput');
+        const btnSend = document.getElementById('btnSend');
+        const chipsRow = document.getElementById('chipsRow');
+
+        function scrollBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
+        function escapeHTML(str) { const d=document.createElement('div'); d.textContent=str; return d.innerHTML; }
+        function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+
+        function addMessage(type, html, videoUrl=null) {
+            const msg = document.createElement('div'); msg.className = `message ${type}`;
+            const av = document.createElement('div'); av.className='avatar'; av.textContent = type==='ai'?'🤖':'👤';
+            const wrap = document.createElement('div');
+            const bubble = document.createElement('div'); bubble.className='bubble'; bubble.innerHTML = html;
+            wrap.appendChild(bubble);
+            if (videoUrl) {
+                const vc = document.createElement('div'); vc.className='video-container';
+                const ifr = document.createElement('iframe'); ifr.src=videoUrl; ifr.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; ifr.allowFullscreen=true; ifr.loading='lazy'; ifr.sandbox='allow-scripts allow-same-origin allow-popups';
+                vc.appendChild(ifr);
+                wrap.appendChild(vc);
+            }
+            const time = document.createElement('div'); time.className='time'; time.textContent = getTime();
+            wrap.appendChild(time);
+            msg.appendChild(av); msg.appendChild(wrap);
+            chatArea.appendChild(msg);
+            scrollBottom();
+        }
+
+        function addTyping() {
+            const msg = document.createElement('div'); msg.className='message ai'; msg.id='typingIndicator';
+            const av = document.createElement('div'); av.className='avatar'; av.textContent='🤖';
+            const bubble = document.createElement('div'); bubble.className='bubble';
+            const dots = document.createElement('div'); dots.className='typing-dots'; dots.innerHTML='<span></span><span></span><span></span>';
+            bubble.appendChild(dots); msg.appendChild(av); msg.appendChild(bubble);
+            chatArea.appendChild(msg); scrollBottom();
+        }
+        function removeTyping() { const el = document.getElementById('typingIndicator'); if(el) el.remove(); }
+
+        function process(msg) {
+            const trimmed = msg.trim(); if(!trimmed) return;
+            addMessage('user', escapeHTML(trimmed));
+            addTyping();
+            setTimeout(() => {
+                removeTyping();
+                const cat = findMatchingCategory(trimmed);
+                const video = cat ? getRandomVideo(cat) : getRandomFallback();
+                const text = cat
+                    ? `🎯 I found a <strong>"${cat}"</strong> video for you!`
+                    : `🤔 No exact match, but here's a random video!`;
+                addMessage('ai', text, video);
+            }, 800+Math.random()*1200);
+        }
+
+        btnSend.addEventListener('click', ()=>{ process(userInput.value); userInput.value=''; userInput.focus(); });
+        userInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); process(userInput.value); userInput.value=''; } });
+        chipsRow.addEventListener('click', e=>{
+            const chip = e.target.closest('.chip'); if(!chip) return;
+            const kw = chip.dataset.keyword; if(kw) { userInput.value=kw; process(kw); userInput.value=''; }
+        });
+        setTimeout(()=>userInput.focus(), 500);
     </script>
 </body>
 </html>
